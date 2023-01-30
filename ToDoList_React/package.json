@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "sweetalert-react": "^0.4.11",
+    "uuid": "^9.0.0"
+  }
+}
