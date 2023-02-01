@@ -6,7 +6,9 @@ import Form from "./components/Form";
 import ListItem from "./components/ListItem";
 import Items from "./mockdata/Items";
 import "./../node_modules/sweetalert/dist/sweetalert.css";
-
+import {orderBy as orderById} from 'lodash';
+import Item from "./components/Item";
+import ItemEdit from "./components/ItemEdit";
 class App extends Component {
     constructor(props) {
         super(props);
@@ -33,7 +35,9 @@ class App extends Component {
             arrayLevel: arrayLevel,
             showForm: false,
             valueItem: "",
-            levelItem: 0
+            levelItem: 0,
+            sortType: '',
+            sortOrder: ''
         };
     }
     handleShowForm = () => {
@@ -73,6 +77,49 @@ class App extends Component {
             showForm: false,
         });
     };
+    handleSort=(sortType,sortOrder)=>{
+        let {items} = this.state;
+        this.setState({
+            sortType: sortType,
+            sortOrder: sortOrder
+        });
+        this.setState({
+            items:orderById(items,[sortType],[sortOrder])
+        });
+    };
+    renderItem = () => {
+        let { items, idEdit, indexEdit, nameEdit, levelEdit, arrayLevel } =
+            this.state;
+        if (items.length === 0) {
+            return <Item item={0} />;
+        }
+        return items.map((item, index) => {
+            if (item.id === idEdit) {
+                return (
+                    <ItemEdit
+                        key={index}
+                        indexEdit={indexEdit}
+                        nameEdit={nameEdit}
+                        levelEdit={levelEdit}
+                        arrayLevel={arrayLevel}
+                        handleEditClickCancel={this.handleEditClickCancel}
+                        handleEditInputChange={this.handleEditInputChange}
+                        handleEditSelectChange={this.handleEditSelectChange}
+                        handleEditClickSubmit={this.handleEditClickSubmit}
+                    />
+                );
+            }
+            return (
+                <Item
+                    key={index}
+                    item={item}
+                    index={index}
+                    handleShowAlert={this.handleShowAlert}
+                    handleEditItem={this.handleEditItem}
+                />
+            );
+        });
+    };
     render() {
         return (
             <div className="container">
@@ -82,7 +129,11 @@ class App extends Component {
                         <Search />
                     </div>
                     <div className="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-                        <Sort />
+                        <Sort 
+                            sortType={this.state.sortType}
+                            sortOrder={this.state.sortOrder}
+                            handleSort={this.handleSort}
+                        />
                     </div>
                     <div className="col-xs-5 col-sm-5 col-md-5 col-lg-5">
                         <button
@@ -108,7 +159,9 @@ class App extends Component {
                         />
                     </div>
                 </div>
-                <ListItem />
+                <ListItem 
+                    renderItem={this.renderItem}
+                />
             </div>
         );
     }

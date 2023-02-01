@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import Items from "../mockdata/Items";
-import Item from "./Item";
 import SweetAlert from "sweetalert-react";
 import "./../../node_modules/sweetalert/dist/sweetalert.css";
-import ItemEdit from "./ItemEdit";
 
 class ListItem extends Component {
     constructor(props) {
@@ -31,7 +29,9 @@ class ListItem extends Component {
             arrayLevel: arrayLevel,
             showForm: false,
             valueItem: "",
-            levelItem: 0
+            levelItem: 0,
+            sortType: '',
+            sortOrder: ''
         };
     }
     handleShowAlert = (item) => {
@@ -94,40 +94,6 @@ class ListItem extends Component {
         });
     };
 
-    renderItem = () => {
-        let { items, idEdit, indexEdit, nameEdit, levelEdit, arrayLevel } =
-            this.state;
-        if (items.length === 0) {
-            return <Item item={0} />;
-        }
-        return items.map((item, index) => {
-            if (item.id === idEdit) {
-                return (
-                    <ItemEdit
-                        key={index}
-                        indexEdit={indexEdit}
-                        nameEdit={nameEdit}
-                        levelEdit={levelEdit}
-                        arrayLevel={arrayLevel}
-                        handleEditClickCancel={this.handleEditClickCancel}
-                        handleEditInputChange={this.handleEditInputChange}
-                        handleEditSelectChange={this.handleEditSelectChange}
-                        handleEditClickSubmit={this.handleEditClickSubmit}
-                    />
-                );
-            }
-            return (
-                <Item
-                    key={index}
-                    item={item}
-                    index={index}
-                    handleShowAlert={this.handleShowAlert}
-                    handleEditItem={this.handleEditItem}
-                />
-            );
-        });
-    };
-
     render() {
         return (
             <div className="panel panel-success">
@@ -161,7 +127,7 @@ class ListItem extends Component {
                             <th style={{ width: "15%" }}>Action</th>
                         </tr>
                     </thead>
-                    <tbody>{this.renderItem()}</tbody>
+                    <tbody>{this.props.renderItem()}</tbody>
                 </table>
             </div>
         );
